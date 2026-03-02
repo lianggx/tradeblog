@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文章管理 - 管理后台</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f4f4f4;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: #333;
+            color: #fff;
+            padding: 10px 0;
+            margin-bottom: 20px;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        nav h1 {
+            font-size: 1.5rem;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 20px;
+        }
+        
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+        }
+        
+        .card {
+            background: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 8px 16px;
+            background: #333;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+        
+        .btn-primary {
+            background: #007bff;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+        }
+        
+        .btn-danger {
+            background: #dc3545;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        table th,
+        table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        table th {
+            background-color: #f2f2f2;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .form-group textarea {
+            height: 300px;
+        }
+        
+        .alert {
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        /* 富文本编辑器样式 */
+        .editor-container {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .editor-toolbar {
+            background: #f8f9fa;
+            border-bottom: 1px solid #ddd;
+            padding: 8px;
+            display: flex;
+            gap: 8px;
+        }
+        
+        .editor-toolbar button {
+            padding: 4px 8px;
+            border: 1px solid #ddd;
+            background: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .editor-content {
+            min-height: 300px;
+            padding: 10px;
+            border: none;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <h1>管理后台</h1>
+            <ul>
+                <li><a href="/admin">首页</a></li>
+                <li><a href="/admin/articles">文章管理</a></li>
+                <li><a href="/admin/categories">分类管理</a></li>
+                <li><a href="/admin/tags">标签管理</a></li>
+                <li><a href="/admin/api-keys">API Key管理</a></li>
+                <li><a href="/admin/password">修改密码</a></li>
+                <li><a href="/admin/login">退出登录</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <div class="container">
+        <div class="card">
+            <h2>文章管理</h2>
+            <a href="#" class="btn btn-primary" id="addArticleBtn">添加文章</a>
+            
+            <table id="articlesTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>标题</th>
+                        <th>作者</th>
+                        <th>发布日期</th>
+                        <th>状态</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- 文章列表将通过JavaScript动态添加 -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- 添加/编辑文章模态框 -->
+    <div id="articleModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 1000;">
+        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fff; padding: 20px; border-radius: 5px; width: 80%; max-width: 800px; max-height: 90vh; overflow-y: auto;">
+            <h3 id="modalTitle">添加文章</h3>
+            <form id="articleForm">
+                <input type="hidden" id="articleId">
+                <div class="form-group">
+                    <label for="title">标题</label>
+                    <input type="text" id="title" name="title" required>
+                </div>
+                <div class="form-group">
+                    <label for="author">作者</label>
+                    <input type="text" id="author" name="author" required>
+                </div>
+                <div class="form-group">
+                    <label for="content">内容</label>
+                    <div class="editor-container">
+                        <div class="editor-toolbar">
+                            <button type="button" onclick="formatText('bold')"><strong>B</strong></button>
+                            <button type="button" onclick="formatText('italic')"><em>I</em></button>
+                            <button type="button" onclick="formatText('underline')"><u>U</u></button>
+                            <button type="button" onclick="formatText('insertOrderedList')">1. 2. 3.</button>
+                            <button type="button" onclick="formatText('insertUnorderedList')">• • •</button>
+                            <button type="button" onclick="formatText('createLink')">链接</button>
+                        </div>
+                        <div class="editor-content" contenteditable="true" id="content"></div>
+                        <input type="hidden" name="content" id="contentHidden">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="tags">标签</label>
+                    <input type="text" id="tags" name="tags" placeholder="用逗号分隔多个标签">
+                </div>
+                <div class="form-group">
+                    <label for="status">状态</label>
+                    <select id="status" name="status">
+                        <option value="published">已发布</option>
+                        <option value="draft">草稿</option>
+                    </select>
+                </div>
+                <div style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px;">
+                    <button type="button" class="btn btn-secondary" id="cancelBtn">取消</button>
+                    <button type="submit" class="btn btn-primary">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        // 页面加载时获取文章列表
+        document.addEventListener('DOMContentLoaded', function() {
+            fetchArticles();
+            
+            // 添加文章按钮点击事件
+            document.getElementById('addArticleBtn').addEventListener('click', function() {
+                document.getElementById('modalTitle').textContent = '添加文章';
+                document.getElementById('articleForm').reset();
+                document.getElementById('articleId').value = '';
+                document.getElementById('content').innerHTML = '';
+                document.getElementById('articleModal').style.display = 'block';
+            });
+            
+            // 取消按钮点击事件
+            document.getElementById('cancelBtn').addEventListener('click', function() {
+                document.getElementById('articleModal').style.display = 'none';
+            });
+            
+            // 表单提交事件
+            document.getElementById('articleForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                // 将富文本编辑器内容同步到隐藏输入框
+                document.getElementById('contentHidden').value = document.getElementById('content').innerHTML;
+                saveArticle();
+            });
+        });
+        
+        // 富文本编辑器功能
+        function formatText(command) {
+            if (command === 'createLink') {
+                const url = prompt('请输入链接地址:');
+                if (url) {
+                    document.execCommand(command, false, url);
+                }
+            } else {
+                document.execCommand(command, false, null);
+            }
+        }
+        
+        // 获取文章列表
+        function fetchArticles() {
+            fetch('/api/articles')
+                .then(response => response.json())
+                .then(data => {
+                    const tbody = document.querySelector('#articlesTable tbody');
+                    tbody.innerHTML = '';
+                    
+                    data.forEach(article => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${article.id}</td>
+                            <td>${article.title}</td>
+                            <td>Admin</td>
+                            <td>${article.published_at}</td>
+                            <td>${article.is_published === 1 ? '已发布' : '草稿'}</td>
+                            <td class="actions">
+                                <a href="#" class="btn btn-secondary" onclick="editArticle(${article.id})">编辑</a>
+                                <a href="#" class="btn btn-danger" onclick="deleteArticle(${article.id})">删除</a>
+                            </td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+                })
+                .catch(error => {
+                    console.error('获取文章列表失败:', error);
+                });
+        }
+        
+        // 编辑文章
+        function editArticle(id) {
+            fetch(`/api/articles/${id}`)
+                .then(response => response.json())
+                .then(article => {
+                    document.getElementById('modalTitle').textContent = '编辑文章';
+                    document.getElementById('articleId').value = article.id;
+                    document.getElementById('title').value = article.title;
+                    document.getElementById('author').value = article.author || 'Admin';
+                    document.getElementById('content').innerHTML = article.content;
+                    document.getElementById('tags').value = article.tags ? article.tags.map(tag => tag.name).join(', ') : '';
+                    document.getElementById('status').value = article.is_published === 1 ? 'published' : 'draft';
+                    document.getElementById('articleModal').style.display = 'block';
+                })
+                .catch(error => {
+                    console.error('获取文章详情失败:', error);
+                });
+        }
+        
+        // 删除文章
+        function deleteArticle(id) {
+            if (confirm('确定要删除这篇文章吗？')) {
+                fetch(`/api/articles/${id}`, {
+                    method: 'DELETE'
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('删除失败');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    alert('文章删除成功！');
+                    fetchArticles();
+                })
+                .catch(error => {
+                    console.error('删除文章失败:', error);
+                    alert('删除文章失败，请稍后重试');
+                });
+            }
+        }
+        
+        // 保存文章
+        function saveArticle() {
+            const id = document.getElementById('articleId').value;
+            const title = document.getElementById('title').value;
+            const author = document.getElementById('author').value;
+            const content = document.getElementById('contentHidden').value;
+            const tags = document.getElementById('tags').value.split(',').map(tag => tag.trim()).filter(tag => tag);
+            const status = document.getElementById('status').value;
+            
+            const articleData = {
+                title,
+                author,
+                content,
+                tags,
+                status
+            };
+            
+            const method = id ? 'PUT' : 'POST';
+            const url = id ? `/api/articles/${id}` : '/api/articles';
+            
+            fetch(url, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(articleData)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('保存失败');
+                }
+                return response.json();
+            })
+            .then(data => {
+                alert('文章保存成功！');
+                document.getElementById('articleModal').style.display = 'none';
+                fetchArticles();
+            })
+            .catch(error => {
+                console.error('保存文章失败:', error);
+                alert('保存文章失败，请稍后重试');
+            });
+        }
+    </script>
+</body>
+</html>

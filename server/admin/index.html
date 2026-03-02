@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理后台</title>
+    <style>
+        :root {
+            --primary-color: #0077cc;
+            --accent-light: #e6f7ff;
+            --background-color: #f8f9fa;
+            --card-background: #fff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: var(--background-color);
+        }
+        
+        .header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header h1 {
+            font-size: 1.5rem;
+        }
+        
+        .nav {
+            background-color: var(--card-background);
+            border-bottom: 1px solid #ddd;
+            padding: 0 1rem;
+        }
+        
+        .nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav li {
+            margin-right: 1rem;
+        }
+        
+        .nav a {
+            display: block;
+            padding: 1rem 0;
+            color: #333;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .nav a:hover {
+            color: var(--primary-color);
+        }
+        
+        .content {
+            padding: 2rem;
+        }
+        
+        .card {
+            background-color: var(--card-background);
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .card h2 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .stat-card {
+            background-color: var(--accent-light);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .stat-label {
+            margin-top: 0.5rem;
+            color: #666;
+        }
+        
+        .article-list {
+            margin-top: 1rem;
+        }
+        
+        .article-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .article-item:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .article-info h3 {
+            margin-bottom: 0.5rem;
+        }
+        
+        .article-meta {
+            font-size: 0.875rem;
+            color: #666;
+        }
+        
+        .article-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 0.875rem;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+        
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+        
+        .btn:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>管理后台</h1>
+        <a href="/admin/login" class="btn btn-secondary">退出登录</a>
+    </div>
+    <div class="nav">
+        <ul>
+            <li><a href="/admin">首页</a></li>
+            <li><a href="/admin/articles">文章管理</a></li>
+            <li><a href="/admin/tags">标签管理</a></li>
+            <li><a href="/admin/categories">分类管理</a></li>
+            <li><a href="/admin/api-keys">API Key管理</a></li>
+            <li><a href="/admin/settings">网站设置</a></li>
+            <li><a href="/admin/password">修改密码</a></li>
+        </ul>
+    </div>
+    <div class="content">
+        <div class="card">
+            <h2>欢迎回来！</h2>
+            <p>这里是管理后台，您可以在这里管理您的博客内容。</p>
+        </div>
+        <div class="card">
+            <h2>统计概览</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="article-count">0</div>
+                    <div class="stat-label">文章总数</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="tag-count">0</div>
+                    <div class="stat-label">标签总数</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="category-count">0</div>
+                    <div class="stat-label">分类总数</div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h2>最近文章</h2>
+                <a href="/admin/articles#add" class="btn btn-primary">添加文章</a>
+            </div>
+            <div class="article-list" id="recent-articles">
+                <!-- 文章列表将通过 JavaScript 动态加载 -->
+                <p>加载中...</p>
+            </div>
+        </div>
+    </div>
+    <script>
+        // 加载统计数据和最近文章
+        document.addEventListener('DOMContentLoaded', function() {
+            // 加载统计数据
+            fetch('/api/articles')
+                .then(response => response.json())
+                .then(articles => {
+                    document.getElementById('article-count').textContent = articles.length;
+                    
+                    // 提取所有标签并去重
+                    const allTags = new Set();
+                    articles.forEach(article => {
+                        if (article.tags) {
+                            article.tags.forEach(tag => allTags.add(tag));
+                        }
+                    });
+                    document.getElementById('tag-count').textContent = allTags.size;
+                    document.getElementById('category-count').textContent = '0'; // 暂时设为0，因为当前没有分类功能
+                    
+                    // 加载最近文章
+                    const recentArticles = articles.slice(0, 5);
+                    const articleList = document.getElementById('recent-articles');
+                    articleList.innerHTML = '';
+                    
+                    if (recentArticles.length === 0) {
+                        articleList.innerHTML = '<p>暂无文章</p>';
+                        return;
+                    }
+                    
+                    recentArticles.forEach(article => {
+                        const articleItem = document.createElement('div');
+                        articleItem.className = 'article-item';
+                        articleItem.innerHTML = `
+                            <div class="article-info">
+                                <h3>${article.title}</h3>
+                                <div class="article-meta">
+                                    发布于: ${new Date(article.published_at).toLocaleString()}
+                                    ${article.tags ? ` | 标签: ${article.tags.join(', ')}` : ''}
+                                </div>
+                            </div>
+                            <div class="article-actions">
+                                <a href="#" class="btn btn-secondary" onclick="editArticle(${article.id}); return false;">编辑</a>
+                                <a href="#" class="btn btn-danger" onclick="deleteArticle(${article.id}); return false;">删除</a>
+                            </div>
+                        `;
+                        articleList.appendChild(articleItem);
+                    });
+                })
+                .catch(error => {
+                    console.error('加载数据失败:', error);
+                    document.getElementById('recent-articles').innerHTML = '<p>加载失败，请刷新页面重试</p>';
+                });
+        });
+        
+        // 删除文章
+        function deleteArticle(id) {
+            if (confirm('确定要删除这篇文章吗？')) {
+                fetch(`/api/articles/${id}`, {
+                    method: 'DELETE'
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('删除失败');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    alert('删除成功');
+                    location.reload();
+                })
+                .catch(error => {
+                    console.error('删除文章失败:', error);
+                    alert('删除失败，请重试');
+                });
+            }
+        }
+        
+        // 编辑文章
+        function editArticle(id) {
+            // 跳转到文章管理页面并打开编辑模态框
+            window.location.href = `/admin/articles#edit=${id}`;
+        }
+    </script>
+</body>
+</html>
