@@ -1,6 +1,6 @@
 # TradeBlog
 
-一个基于 Next.js 14 和 SQLite 的个人博客系统。
+一个基于 Vue 3 和 Node.js + SQLite 的个人博客系统。
 
 ## 功能特性
 
@@ -29,11 +29,10 @@
 
 ## 技术栈
 
-- **前端框架**：Next.js 14 (App Router)
-- **编程语言**：TypeScript / JavaScript
-- **样式方案**：Tailwind CSS
+- **前端框架**：Vue 3
+- **后端框架**：Express.js
+- **编程语言**：JavaScript
 - **数据库**：SQLite + better-sqlite3
-- **富文本编辑器**：Tiptap
 - **认证**：简单密码 + API Key
 
 ## 快速开始
@@ -82,35 +81,26 @@ npm run dev
 
 ```
 TradeBlog/
-├── app/                      # Next.js App Router
-│   ├── admin/                # 后台管理页面
-│   │   ├── articles/         # 文章管理
-│   │   ├── categories/       # 分类管理
-│   │   ├── tags/            # 标签管理
-│   │   ├── api-keys/        # API 密钥管理
-│   │   └── stats/           # 统计数据
-│   ├── api/                 # API 路由
-│   │   ├── articles/        # 文章 API
-│   │   ├── categories/      # 分类 API
-│   │   ├── tags/            # 标签 API
-│   │   └── stats/           # 统计 API
-│   ├── articles/            # 文章详情页
-│   ├── search/              # 搜索页面
-│   ├── tags/                # 标签页面
-│   ├── categories/          # 分类页面
-│   └── archive/             # 归档页面
-├── components/              # React 组件
-│   └── TiptapEditor.jsx     # 富文本编辑器
+├── client/                   # 前端代码
+│   ├── src/                 # 源代码
+│   │   ├── views/           # 页面组件
+│   │   ├── App.vue          # 根组件
+│   │   └── main.js          # 入口文件
+│   ├── package.json         # 前端依赖
+│   └── vite.config.js       # Vite 配置
+├── server/                  # 后端代码
+│   ├── admin/               # 后台管理页面
+│   ├── routes/              # API 路由
+│   ├── db.js                # 数据库初始化
+│   └── index.js             # 后端入口
 ├── lib/                     # 工具库
-│   ├── db.js                # 数据库连接
+│   ├── middleware/          # 中间件
 │   ├── repositories/        # 数据访问层
-│   │   ├── article.js
-│   │   ├── category.js
-│   │   ├── tag.js
-│   │   └── apiKey.js
-│   └── middleware/          # 中间件
-│       └── auth.js          # 认证中间件
-└── public/                  # 静态资源
+│   ├── db.js                # 数据库连接
+│   └── utils.js             # 工具函数
+├── server.js                # 应用入口
+├── package.json             # 后端依赖
+└── .env.local               # 环境变量配置
 ```
 
 ## API 文档
@@ -215,20 +205,87 @@ API_KEY="tradeblog-api-key-2024"
 
 ## 部署
 
-### Vercel 部署
+### 服务器部署
 
-1. 将代码推送到 GitHub
-2. 在 Vercel 中导入项目
-3. 配置环境变量
-4. 部署
+1. **前端构建**：
+   ```bash
+   cd client
+   npm install
+   npm run build
+   ```
 
-注意：SQLite 数据库在 Vercel 上需要使用持久化存储，或者考虑使用其他数据库。
+2. **上传文件**：
+   - 将 `client/dist` 目录上传到 Nginx 静态文件目录（如 `/var/www/html`）
+   - 将后端代码上传到服务器（如 `/data/sites/tradeblog`）
 
-### 本地部署
+3. **安装后端依赖**：
+   ```bash
+   cd /data/sites/tradeblog
+   npm install
+   ```
+
+4. **初始化数据库**：
+   ```bash
+   npm run db:init
+   ```
+
+5. **配置 Nginx**：
+   ```nginx
+   server {
+       listen 80;
+       server_name your-domain.com;
+
+       # 前端静态文件
+       location / {
+           root /var/www/html;
+           index index.html;
+           try_files $uri $uri/ /index.html;
+       }
+
+       # API 请求转发
+       location /api {
+           proxy_pass http://localhost:3000;
+           proxy_http_version 1.1;
+           proxy_set_header Upgrade $http_upgrade;
+           proxy_set_header Connection 'upgrade';
+           proxy_set_header Host $host;
+           proxy_cache_bypass $http_upgrade;
+       }
+
+       # 管理后台
+       location /admin {
+           proxy_pass http://localhost:3000;
+           proxy_http_version 1.1;
+           proxy_set_header Upgrade $http_upgrade;
+           proxy_set_header Connection 'upgrade';
+           proxy_set_header Host $host;
+           proxy_cache_bypass $http_upgrade;
+       }
+   }
+   ```
+
+6. **启动后端服务**：
+   ```bash
+   # 安装 PM2 进程管理工具
+   npm install -g pm2
+   
+   # 启动应用
+   pm2 start server/index.js --name tradeblog
+   
+   # 设置开机自启
+   pm2 startup
+   pm2 save
+   ```
+
+### 本地开发
 
 ```bash
-npm run build
+# 启动后端服务
 npm start
+
+# 启动前端开发服务器
+cd client
+npm run dev
 ```
 
 ## 常见问题
@@ -243,7 +300,11 @@ npm start
 
 ### 数据库文件位置
 
-默认情况下，数据库文件 `blog.db` 会在项目根目录创建。
+默认情况下，数据库文件会根据环境变量 `DATABASE_URL` 的配置创建：
+- 开发环境：默认创建 `database.db` 文件
+- 生产环境：默认创建 `production-blog.db` 文件
+
+您可以在 `.env.local` 或 `.env.production` 文件中修改数据库文件路径。
 
 ### 修改管理员密码
 
