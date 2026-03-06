@@ -7,5 +7,8 @@ router.use('/categories', require('./categories'));
 router.use('/tags', require('./tags'));
 router.use('/stats', require('./stats'));
 router.use('/login', require('./login'));
+router.use('/settings', require('./settings'));
+router.use('/api-keys', require('./api-keys'));
+router.use('/change-password', require('./change-password'));
 
 module.exports = router;

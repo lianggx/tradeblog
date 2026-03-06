@@ -39,7 +39,7 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   line-height: 1.6;
   color: #333;
-  background-color: #f5f5f5;
+  background-color: #f0f8ff;
 }
 
 .container {
@@ -49,8 +49,8 @@ body {
 }
 
 .header {
-  background-color: #fff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background: #0077cc;
+  box-shadow: 0 4px 15px rgba(0, 119, 204, 0.2);
   position: sticky;
   top: 0;
   z-index: 100;
@@ -69,8 +69,9 @@ body {
 }
 
 .logo a {
-  color: #333;
+  color: #fff;
   text-decoration: none;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .nav {
@@ -79,27 +80,27 @@ body {
 }
 
 .nav-link {
-  color: #333;
+  color: #fff;
   text-decoration: none;
   padding: 0.5rem 1rem;
-  border-radius: 4px;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 .nav-link:hover {
-  background-color: #f0f0f0;
+  background: rgba(255, 255, 255, 0.4);
+  transform: translateY(-2px);
 }
 
 .main {
   padding: 2rem 0;
+  margin-top: 2rem;
 }
 
 .footer {
-  background-color: #333;
+  background: #0077cc;
   color: #fff;
-  text-align: center;
   padding: 2rem 0;
-  margin-top: 2rem;
+  text-align: center;
 }
 
 /* 响应式设计 */

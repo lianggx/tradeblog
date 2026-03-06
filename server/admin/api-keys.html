@@ -4,168 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>API Key管理 - 管理后台</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background-color: #f4f4f4;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        header {
-            background: #333;
-            color: #fff;
-            padding: 10px 0;
-            margin-bottom: 20px;
-        }
-        
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-        
-        nav h1 {
-            font-size: 1.5rem;
-        }
-        
-        nav ul {
-            display: flex;
-            list-style: none;
-        }
-        
-        nav ul li {
-            margin-left: 20px;
-        }
-        
-        nav ul li a {
-            color: #fff;
-            text-decoration: none;
-        }
-        
-        .card {
-            background: #fff;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        
-        h2 {
-            margin-bottom: 20px;
-            color: #333;
-        }
-        
-        .btn {
-            display: inline-block;
-            padding: 8px 16px;
-            background: #333;
-            color: #fff;
-            text-decoration: none;
-            border-radius: 4px;
-            margin-right: 10px;
-        }
-        
-        .btn-primary {
-            background: #007bff;
-        }
-        
-        .btn-secondary {
-            background: #6c757d;
-        }
-        
-        .btn-danger {
-            background: #dc3545;
-        }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        
-        table th,
-        table td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        
-        table th {
-            background-color: #f2f2f2;
-        }
-        
-        .actions {
-            display: flex;
-            gap: 10px;
-        }
-        
-        .form-group {
-            margin-bottom: 15px;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-        }
-        
-        .form-group input {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        
-        .alert {
-            padding: 10px;
-            margin-bottom: 20px;
-            border-radius: 4px;
-        }
-        
-        .alert-success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        
-        .alert-danger {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-    </style>
+    <script src="/admin/common-header.js"></script>
+    <link rel="stylesheet" href="/admin/admin.css">
 </head>
 <body>
-    <header>
-        <nav>
-            <h1>管理后台</h1>
-            <ul>
-                <li><a href="/admin">首页</a></li>
-                <li><a href="/admin/articles">文章管理</a></li>
-                <li><a href="/admin/categories">分类管理</a></li>
-                <li><a href="/admin/tags">标签管理</a></li>
-                <li><a href="/admin/api-keys">API Key管理</a></li>
-                <li><a href="/admin/password">修改密码</a></li>
-                <li><a href="/admin/login">退出登录</a></li>
-            </ul>
-        </nav>
-    </header>
-    
+    <!-- 公共头部将通过 JavaScript 加载 -->
     <div class="container">
         <div class="card">
             <h2>API Key管理</h2>
@@ -178,8 +21,6 @@
                         <th>名称</th>
                         <th>API Key</th>
                         <th>创建时间</th>
-                        <th>最后使用时间</th>
-                        <th>状态</th>
                         <th>操作</th>
                     </tr>
                 </thead>
@@ -190,15 +31,15 @@
         </div>
     </div>
     
-    <!-- 添加/编辑API Key模态框 -->
-    <div id="apiKeyModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 1000;">
-        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fff; padding: 20px; border-radius: 5px; width: 80%; max-width: 500px;">
+    <!-- 添加/编辑 API Key 模态框 -->
+    <div id="apiKeyModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content" style="max-width: 500px;">
             <h3 id="modalTitle">添加API Key</h3>
             <form id="apiKeyForm">
                 <input type="hidden" id="apiKeyId">
                 <div class="form-group">
-                    <label for="apiKeyName">名称</label>
-                    <input type="text" id="apiKeyName" name="name" required>
+                    <label for="apiKeyDescription">名称</label>
+                    <input type="text" id="apiKeyDescription" name="description" required>
                 </div>
                 <div class="form-group">
                     <label for="apiKeyValue">API Key</label>
@@ -223,7 +64,7 @@
                 document.getElementById('modalTitle').textContent = '添加API Key';
                 document.getElementById('apiKeyForm').reset();
                 document.getElementById('apiKeyId').value = '';
-                document.getElementById('apiKeyModal').style.display = 'block';
+                document.getElementById('apiKeyModal').style.display = 'flex';
             });
             
             // 取消按钮点击事件
@@ -255,11 +96,9 @@
                         const row = document.createElement('tr');
                         row.innerHTML = `
                             <td>${apiKey.id}</td>
-                            <td>${apiKey.name}</td>
+                            <td>${apiKey.description || '无'}</td>
                             <td>${apiKey.key}</td>
                             <td>${apiKey.created_at}</td>
-                            <td>${apiKey.last_used_at || '从未使用'}</td>
-                            <td>${apiKey.is_active === 1 ? '活跃' : '禁用'}</td>
                             <td class="actions">
                                 <a href="#" class="btn btn-secondary" onclick="editApiKey(${apiKey.id})">编辑</a>
                                 <a href="#" class="btn btn-danger" onclick="deleteApiKey(${apiKey.id})">删除</a>
@@ -280,9 +119,9 @@
                 .then(apiKey => {
                     document.getElementById('modalTitle').textContent = '编辑API Key';
                     document.getElementById('apiKeyId').value = apiKey.id;
-                    document.getElementById('apiKeyName').value = apiKey.name;
+                    document.getElementById('apiKeyDescription').value = apiKey.description || '';
                     document.getElementById('apiKeyValue').value = apiKey.key;
-                    document.getElementById('apiKeyModal').style.display = 'block';
+                    document.getElementById('apiKeyModal').style.display = 'flex';
                 })
                 .catch(error => {
                     console.error('获取API Key详情失败:', error);
@@ -315,7 +154,7 @@
         // 保存API Key
         function saveApiKey() {
             const id = document.getElementById('apiKeyId').value;
-            const name = document.getElementById('apiKeyName').value;
+            const description = document.getElementById('apiKeyDescription').value;
             let key = document.getElementById('apiKeyValue').value;
             
             if (!key) {
@@ -323,7 +162,7 @@
             }
             
             const apiKeyData = {
-                name,
+                description,
                 key
             };
             

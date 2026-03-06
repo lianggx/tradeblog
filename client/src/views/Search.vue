@@ -115,6 +115,8 @@ export default {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   padding: 1.5rem;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 .article-card:hover {
@@ -125,12 +127,16 @@ export default {
 .article-title {
   font-size: 1.2rem;
   margin-bottom: 0.5rem;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 .article-title a {
   color: #333;
   text-decoration: none;
   transition: color 0.3s ease;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 .article-title a:hover {
@@ -141,11 +147,15 @@ export default {
   font-size: 0.9rem;
   color: #666;
   margin-bottom: 1rem;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 .article-summary {
   color: #666;
   line-height: 1.6;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 .loading, .no-results {

@@ -1,10 +1,20 @@
 const express = require('express');
 const router = express.Router();
+const db = require('../db');
+
+// 获取密码的函数
+function getAdminPassword() {
+  const passwordSetting = db.get('SELECT * FROM settings WHERE key = ?', ['admin_password']);
+  if (passwordSetting) {
+    return passwordSetting.value;
+  }
+  return process.env.ADMIN_PASSWORD || 'admin';
+}
 
 // 登录验证
 router.post('/', (req, res) => {
   const { password } = req.body;
-  const adminPassword = process.env.ADMIN_PASSWORD || 'admin';
+  const adminPassword = getAdminPassword();
 
   if (password === adminPassword) {
     // 登录成功，设置 session

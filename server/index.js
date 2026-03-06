@@ -29,16 +29,18 @@ app.use(session({
   }
 }));
 
-// 静态文件服务
+// 静态文件服务 - 前端构建文件
 app.use(express.static(path.join(__dirname, '../client/dist')));
 
-// 管理后台路由 - 需要登录验证
+// 管理后台静态资源 - 不需要验证
+app.use('/admin/admin.css', express.static(path.join(__dirname, 'admin/admin.css')));
+
+// 管理后台登录页面 - 不需要验证
+app.use('/admin/login', express.static(path.join(__dirname, 'admin/login.html')));
+app.use('/admin/login.html', express.static(path.join(__dirname, 'admin/login.html')));
+
+// 管理后台其他路由 - 需要登录验证
 app.use('/admin', (req, res, next) => {
-  // 允许访问登录页面
-  if (req.path === '/login.html' || req.path === '/login') {
-    return next();
-  }
-  
   // 检查登录状态
   if (req.session.isAdmin) {
     return next();
@@ -46,7 +48,12 @@ app.use('/admin', (req, res, next) => {
   
   // 未登录，重定向到登录页面
   res.redirect('/admin/login.html');
-}, express.static(path.join(__dirname, 'admin')));
+});
+
+// 管理后台静态文件服务（需要登录验证）
+app.use('/admin', express.static(path.join(__dirname, 'admin'), {
+  extensions: ['html']
+}));
 
 // API 路由
 app.use('/api', require('./routes'));
