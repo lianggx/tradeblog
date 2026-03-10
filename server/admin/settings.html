@@ -22,6 +22,10 @@
                     <label for="siteTagline">网站副标题</label>
                     <input type="text" id="siteTagline" name="site_tagline" required>
                 </div>
+                <div class="form-group">
+                    <label for="siteCopyright">版权信息</label>
+                    <input type="text" id="siteCopyright" name="site_copyright" placeholder="例如: &copy; 2026 TradeBlog. All rights reserved.">
+                </div>
                 <div class="flex-end">
                     <a href="/admin" class="btn btn-secondary">取消</a>
                     <button type="submit" class="btn btn-primary">保存设置</button>
@@ -38,6 +42,7 @@
                 .then(settings => {
                     document.getElementById('siteName').value = settings.site_name || 'TradeBlog';
                     document.getElementById('siteTagline').value = settings.site_tagline || '记录生活，分享思考';
+                    document.getElementById('siteCopyright').value = settings.site_copyright || '';
                 })
                 .catch(error => {
                     console.error('加载设置失败:', error);
@@ -49,13 +54,14 @@
                 
                 const siteName = document.getElementById('siteName').value;
                 const siteTagline = document.getElementById('siteTagline').value;
+                const siteCopyright = document.getElementById('siteCopyright').value;
                 
                 fetch('/api/settings', {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ site_name: siteName, site_tagline: siteTagline })
+                    body: JSON.stringify({ site_name: siteName, site_tagline: siteTagline, site_copyright: siteCopyright })
                 })
                 .then(response => response.json())
                 .then(data => {

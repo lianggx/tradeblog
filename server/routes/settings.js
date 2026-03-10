@@ -25,13 +25,16 @@ router.get('/', (req, res) => {
 // 更新设置
 router.put('/', (req, res) => {
   try {
-    const { site_name, site_tagline } = req.body;
+    const { site_name, site_tagline, site_copyright } = req.body;
     
     // 更新网站名称
     db.run('INSERT OR REPLACE INTO settings (key, value, updated_at) VALUES (?, ?, CURRENT_TIMESTAMP)', ['site_name', site_name]);
     
     // 更新网站副标题
     db.run('INSERT OR REPLACE INTO settings (key, value, updated_at) VALUES (?, ?, CURRENT_TIMESTAMP)', ['site_tagline', site_tagline]);
+    
+    // 更新网站版权信息
+    db.run('INSERT OR REPLACE INTO settings (key, value, updated_at) VALUES (?, ?, CURRENT_TIMESTAMP)', ['site_copyright', site_copyright]);
     
     res.json({ message: '设置保存成功' });
   } catch (error) {

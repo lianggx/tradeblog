@@ -2,7 +2,7 @@
   <div class="app">
     <header class="header">
       <div class="container">
-        <h1 class="logo"><a href="/">TradeBlog</a></h1>
+        <h1 class="logo"><a href="/">{{ settings.site_name || 'TradeBlog' }}</a></h1>
         <nav class="nav">
           <router-link to="/" class="nav-link">首页</router-link>
           <router-link to="/search" class="nav-link">搜索</router-link>
@@ -16,7 +16,7 @@
     
     <footer class="footer">
       <div class="container">
-        <p>&copy; 2026 TradeBlog. All rights reserved.</p>
+        <p v-html="settings.site_copyright || '&copy; 2026 TradeBlog. All rights reserved.'"></p>
       </div>
     </footer>
   </div>
@@ -24,7 +24,26 @@
 
 <script>
 export default {
-  name: 'App'
+  name: 'App',
+  data() {
+    return {
+      settings: {}
+    }
+  },
+  created() {
+    this.fetchSettings()
+  },
+  methods: {
+    async fetchSettings() {
+      try {
+        const response = await fetch('/api/settings')
+        const data = await response.json()
+        this.settings = data
+      } catch (error) {
+        console.error('Failed to fetch settings:', error)
+      }
+    }
+  }
 }
 </script>
 
